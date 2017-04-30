@@ -1,0 +1,363 @@
+﻿/*******************************************************************************
+* Basic style
+*******************************************************************************/
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url(http://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
+
+* {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    font-family: /*NanumGothic,*/ 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+    text-align: left;
+    vertical-align: baseline;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    box-sizing: border-box;
+    font-size: 16px;
+    text-align: center;
+    color: #555; /* font color; 00=no color; ff=full color */
+    line-height: 250%; /* 1.8; */
+    -webkit-font-smoothing: antialiased;
+    clear: both;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0px 0px;
+    font-family: /*'Nanum Myeongjo',*/ 'Lucida Grande', Calibri, Helvetica, Arial, sans-serif;
+    font-weight: normal; /* normal = 400; bolt = 700 */
+    letter-spacing: -1px;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+h3 {
+    padding-top: 30px; /* space from top paragraph; */
+    line-height: 300%; /* 1.8; */
+    font-size: 24px;
+    color: #2B0042; /* very very dark purple */
+}
+
+h4 {
+    font-size: 21px;
+}
+
+h5 {
+    font-size: 18px;
+}
+
+h6 {
+    font-size: 16px;
+}
+
+ul {
+  list-style-position: inside;
+  list-style: disc;
+}
+
+li {
+    margin-left: 40px;
+}
+
+/*b {
+    color: #ff6f6f;
+    font-weight: bold;
+}*/
+
+a {
+    text-decoration: none;
+    color: #ff6f6f;
+    text-shadow: none;
+
+    transition: color 0.5s ease;
+    transition: text-shadow 0.5s ease;
+    -webkit-transition: color 0.5s ease;
+    -webkit-transition: text-shadow 0.5s ease;
+    -moz-transition: color 0.5s ease;
+    -moz-transition: text-shadow 0.5s ease;
+    -o-transition: color 0.5s ease;
+    -o-transition: text-shadow 0.5s ease;
+    -ms-transition: color 0.5s ease;
+    -ms-transition: text-shadow 0.5s ease;
+}
+a:hover, a:focus {text-decoration: underline;}
+
+em {
+    font-style: normal;
+    color: MediumVioletRed;
+}
+
+img {
+    transition: all 0.5s ease-in-out;
+}
+img:active {
+    transform: scale(1.8);
+}
+
+img.top_margin {
+    margin-top: 20px;
+}
+
+.indent {
+     padding-left: 30px;
+}
+
+.separator {
+    position:absolute;
+    left: 0px;
+    right: 0px;
+    height: 2px;
+    margin-top: 20px;
+    background-color: #e7e7e7;
+}
+
+
+
+/*******************************************************************************
+* header
+*******************************************************************************/
+
+.header_wrapper {
+    /*border: 1px solid #73AD21;*/
+    position: absolute; /* fixed; */
+    /*background: url("../images/rrianglified.png");
+    background-size: 3840px 180px;
+    background-repeat: no-repeat;*/
+    background-color: #222;
+    width: 100%;
+    height: 120px; /* top=40; font=30; btm=40 = 120 */
+    z-index: 900;
+    box-shadow: 0px 8px 8px rgba(100, 100, 100, 0.5); /* #ccc; */
+}
+
+.header_octocat {
+    /*border: 1px solid #73AD21;*/
+    z-index: 980;
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    background: url("../images/octocat.png");
+    background-size: 30px 30px; /* reduce the size of image into 50px*/
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+}
+
+.header_span_login {
+    /*border: 1px solid #73AD21;*/
+    position: absolute;
+    text-align: right;
+    line-height: 180%;
+    top: 40px;
+    right: 105px;
+    color: #ff6f6f; /* #eee; */
+    height: 30px;
+    cursor: default;
+}
+
+.header_login, .header_email {
+    /*border: 1px solid #73AD21;*/
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    background: url("../images/login_icon.png");
+    background-size: 30px 30px; /* reduce the size of image into 30px*/
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+.header_email {
+    right: 15px;
+    background: url("../images/email_icon.png");
+    background-size: 30px 30px; /* reduce the size of image into 30px*/
+}
+
+.header_title { /* for h1 */
+    /*border: 1px solid #f00;*/
+    margin-top: 33px;
+    text-align: center;
+    color: #eee;
+    font-size: 30px; /* 1px = 1/16em; */
+}
+
+
+
+/*******************************************************************************
+* content
+*******************************************************************************/
+
+.content_wrapper {
+    /*border: 10px solid #00f;*/
+    background-color: #fff;
+    position: relative;
+    width: 600px;
+    top: 120px;
+    margin: auto;
+    padding-bottom: 60px;
+}
+
+.description {
+    /*border: 1px solid #0f0;*/
+    padding-top: 20px;
+    text-align: center;
+}
+
+
+
+/*******************************************************************************
+* login
+*******************************************************************************/
+
+#login_outer {
+    position: fixed;
+    z-index: 998; /* sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* enable scroll if needed */
+    background-color: rgb(255,255,255); /* fallback color; ?? whit is fallback color */
+    background-color: rgba(255,255,255,0.8); /* opacity */
+}
+
+#login_inner {
+    /*border: 3px solid #73AD21;*/
+    text-align: center;
+    position: relative;
+    z-index: 999; /* sit on top */
+    padding-top: 50px;
+    left: 50%;
+    top: 300px;
+    transform: translate(-50%, 0%);
+    width: 100%;
+    height: 120px; 
+    overflow: auto; /* enable scroll if needed */
+    background-color: rgb(255,255,255); /* fallback color; ?? whit is fallback color */
+    background-color: rgba(255,255,255,0.8); /* opacity */
+}
+
+#input_login {
+    margin: 2px;
+    background-color: #f0f0f0;
+    width: 200px;
+    height: 30px;
+    padding-left: 6px;
+}
+
+#submit_login {
+    /*border: 3px solid #73AD21;*/
+    margin: 2px;
+    background-color: grey;
+    width: 100px;
+    height: 30px;
+    color: white;
+    text-align: center;
+}
+#submit_login:hover {
+    background-color: #ff6f6f;
+    cursor: pointer;
+}
+
+#span_login {
+    font-size: 14px;
+}
+
+
+/*******************************************************************************
+* test and quiz
+*******************************************************************************/
+.ol_quiz input {
+    margin-bottom: 30px;
+}
+
+.input_name, .input_quiz {
+    background-color: #f0f0f0;
+    width: 160px;
+    height: 30px;
+    padding-left: 6px;
+}
+
+.submit_name, .submit_quiz, .submit_next, .submit_eval {
+    /*border: 3px solid #73AD21;*/
+    background-color: grey;
+    width: 90px;
+    height: 30px;
+    color: white;
+    text-align: center;
+    margin-left: 30px;
+}
+.submit_eval {
+    width: 200px;
+    height: 60px;
+    font-size: 24px;
+    font-weight: 700;
+    margin-left: 0px;
+}
+.submit_name:hover, .submit_quiz:hover, .submit_next:hover, .submit_eval:hover {
+    background-color: #ff6f6f;
+    cursor: pointer;
+}
+
+.span_name, .span_next, .span_quiz {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.span_eval {
+    font-size: 14px;
+}
+
+
+
+/*******************************************************************************
+* tooltip
+*******************************************************************************/
+
+.span_quiz {
+    position: relative;
+    display: inline-block;
+    /*border-bottom: 1px dotted black;*/
+}
+
+.span_quiz .tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background-color: #ff6f6f;
+    color: #fff;
+    /*text-align: center;*/
+    line-height: 130%;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 100%; /* top from 100% of parent */
+    left: 0%; /* left from 0% of parent */
+    margin-left: 0px;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.span_quiz .tooltiptext::after { /* topward arrow at bottom */
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 20px; /* arrow left from 20px of parent*/
+    margin-left: 0px;
+    border-width: 5px; /* size of arrow */
+    border-style: solid;
+    border-color: transparent transparent #ff6f6f transparent;
+}
+
+.span_quiz:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}

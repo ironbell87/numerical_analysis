@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript" src="../javascripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="../javascripts/login.js"></script>
+    <script type="text/javascript" src="../javascripts/quiz.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="../stylesheets/stylesheet.css">
+    <title>Newton's divided differences for interpolation</title>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header_wrapper">
+        <a class="header_octocat" href="https://pages.github.com" target="_blank"></a>
+        <h1 class="header_title">뉴턴의 분할 차분을 이용한 보간(Newton's divided differences for interpolation)</h1>
+        <span class="header_span_login"></span>
+        <a class="header_login"></a>
+        <a class="header_email" href="mailto:ironbell@kyungnam.ac.kr"></a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content_wrapper">
+
+        <!--########## PRE VIEW ##########-->
+        <div id="pre_view" hidden>
+            <h3><a name="pre_veiw"></a>학습자</h3>
+            이름 입력<br />
+            <input type="text" class="input_name" placeholder="이름을 입력하세요" ondrop="return false;" onpaste="return false;">
+            <input type="submit" class="submit_name" value="이름 입력" /><span class="span_name"></span><br />
+        </div>
+        <div class="separator"></div>
+
+        <!--########## MAIN VIEW ##########-->
+        <div id="main_view" hidden>
+            <!--inline script for left-align of MathJax equation-->
+            <script>
+                if (MathJax) {
+                    MathJax.Hub.Config({ displayAlign: "left" });
+                    MathJax.Hub.Rerender();
+                }
+            </script>
+            <!--script for left-align of MathJax equation-->
+            <h3 hidden><a name="general_form"></a>보간 기본식</h3>
+            <ul hidden>
+                <li>
+                    보간식은 여러 보간식의 합으로 표현할 수 있다. 따라서 보간식을 0차식(상수), 1차식, 2차식, 3차식, 4차식, ...의 합으로 보간식을 표현할 수도 있다.
+                </li>
+                <li>
+                    예를 들어 다음의 2차 보간식 \(p(x) = 2x^2 + 3x + 4\)는 \(p(x) = 2x^2 + 3x + 4 = (c) + (bx + 7) + (ax^2 + 6x - 4)\)와 같이 0차식, 1차식, 2차식의 합으로 표현할 수도 있다.
+                    여기에서 \(a, \, b, \, c\)를 구하시오.<br />
+                    \(a\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="2" hint="\(2 = a\)"><span class="span_quiz"></span><br />
+                    \(b\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="-3" hint="\(3 = b + 6\)"><span class="span_quiz"></span><br />
+                    \(c\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(4 = c + 7 - 4\)"><span class="span_quiz"></span><br />
+                </li>
+                <li>
+                    따라서 어떤 점들의 좌표 \((x_i, \, y_i)\)가 주어졌을 때, 보간 기본식을 \(x_i, \, y_i\)가 포함되는 0차식, 1차식, 2차식, ...의 합으로 표현할 수도 있다.
+                    이러한 다항식을 뉴턴 다항식(Newton polynomial)이라 하며, 보간의 기본식으로 활용할 수 있다.
+                </li>
+            </ul>
+            <h3 hidden><a name="case_study"></a>사례 연구(case study)</h3>
+            <ul hidden>
+                <li>
+                    만약 점 세개의 좌표가 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (4, \, 64)\)로 주어진 경우, 뉴턴 다항식을 이용한 2차 보간 기본식은 다음과 같다.
+                    $$ p_2(x) = a + b(x-x_0) + c(x-x_0)(x-x_1) = a + b(x-1) + c(x-1)(x-2) = y $$
+                </li>
+                <li>
+                    이 기본식에 점 세개의 좌표 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (4, \, 64)\)를 차례로 대입하면 다음과 같은 식을 얻는다.
+                    $$ \begin{align}
+                    p_2(x_0) &= a + b(x_0-x_0) + c(x_0-x_0)(x_0-x_1) = a + b(1-1) + c(1-1)(1-2) \\
+                    &= a + b\times0 + c\times0 = y_0 = 1 \\
+                    p_2(x_1) &= a + b(x_1-x_0) + c(x_1-x_0)(x_1-x_1) = a + b(2-1) + c(2-1)(2-2) \\
+                    &= a + b\times1 + c\times0 = y_1 = 8 \\
+                    p_2(x_2) &= a + b(x_2-x_0) + c(x_2-x_0)(x_2-x_1) = a + b(4-1) + c(4-1)(4-2) \\
+                    &= a + b\times3 + c\times6 = y_2 = 64
+                    \end{align}$$
+                </li>
+                <li>
+                    위 식을 간단하게 다시 쓰면 다음과 같다.
+                    $$ \begin{align}
+                    p_2(x_0) &= a\times1 + b\times0 + c\times0 = y_0 = 1 \\
+                    p_2(x_1) &= a\times1 + b\times1 + c\times0 = y_1 = 8 \\
+                    p_2(x_2) &= a\times1 + b\times3 + c\times6 = y_2 = 64
+                    \end{align}$$
+                </li>
+                <li>
+                    위 식을 행렬식으로 다시 쓰면 다음과 같다.
+                    $$
+                    \begin{bmatrix} 1 & 0 & 0 \\ 1 & 1 & 0 \\ 1 & 3 & 6 \end{bmatrix}
+                    \begin{Bmatrix} a \\ b \\c \end{Bmatrix} = \begin{Bmatrix} 1 \\ 8 \\ 64 \end{Bmatrix}
+                    \quad XC = Y
+                    \quad X = \begin{bmatrix} 1 & 0 & 0 \\ 1 & 1 & 0 \\ 1 & 3 & 6 \end{bmatrix}
+                    \quad C = \begin{Bmatrix} a \\ b \\c \end{Bmatrix}
+                    \quad Y = \begin{Bmatrix} 1 \\ 8 \\ 64 \end{Bmatrix}
+                    $$
+                </li>
+                <li>
+                    위 행렬식 \(XC=Y\)의 경우, 전방 대입(forward substitution)으로 \(C\)를 쉽게 계산할 수 있다. 행렬 \(C\)의 원소 \(a, \, b, \, c\)를 구하시오<br />
+                    \(a\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(1\times a+0\times b+0\times c=a=1\)"><span class="span_quiz"></span><br />
+                    \(b\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="7" hint="\(1\times a+1\times b+0\times c=a+b=8\)"><span class="span_quiz"></span><br />
+                    \(c\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="7" hint="\(1\times a+3\times b+6\times c=a+3b+6c=64\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="divided_differences"></a>분할 차분(divided differences)</h3>
+            <ul hidden>
+                <li>
+                    이때 분할 차분(divided differences)을 이용하면 위 행렬식에서 행렬 \(C\)를 보다 간편하게 계산할 수 있다.
+                </li>
+                <li>
+                    분할 차분은 \(f[x_0], \, f[x_0,x_1], \, f[x_0,x_1,x_2], \, \cdots, \, f[x_0,x_1,x_2,\cdots,\,x_n]\) 등으로 표시하며 계산방법은 다음의 분할 차분표와 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & f[x_0] & f[x_0,x_1] & f[x_0,f_1,f_2] \\
+                    \hline
+                    0 & x_0 & \color{MediumVioletRed}{f[x_0] = y_0} & \color{MediumVioletRed}{f[x_0,x_1] = \cfrac{f[x_1]-f[x_0]}{x_1-x_0}} & \color{MediumVioletRed}{f[x_0,x_1,x_2] = \cfrac{f[x_1,x_2]-f[x_0,x_1]}{x_2-x_0}} \\
+                    \hline
+                    1 & x_1 & f[x_1] = y_1 & f[x_1,x_2] = \cfrac{f[x_2]-f[x_1]}{x_2-x_1} & \\
+                    \hline
+                    2 & x_2 & f[x_2] = y_2 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    그리고 <em>\(a = f[x_0], \, b = [fx_0,x_1], \, c = [fx_0,x_1,x_2]\)</em>이다.
+                </li>
+                <li>
+                    따라서 \(a = f[x_0], \, b = f[x_0,x_1], \, c = f[x_0,x_1,x_2]\)라는 점을 고려하면 연립방정식의 풀이 없이 다음과 같이 분할 차분을 이용한 2차 보간식을 매우 간단하게 구할 수 있다.
+                    $$ \begin{align}
+                    p_2(x) &= a + b(x-x_0) + c(x-x_0)(x-x_1) \\
+                    &= f[x_0] + f[x_0, f_1](x-x_0) + f[x_0,f_1,f_2](x-x_0)(x-x_1) = y
+                    \end{align}$$
+                </li>
+                <li>
+                    만약 점 세개의 좌표가 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (4, \, 64)\)로 주어진 경우, 분할 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & f[x_0] & f[x_0,x_1] & f[x_0,f_1,f_2] \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{f[x_0] = a} & \color{MediumVioletRed}{f[x_0,x_1] = \cfrac{8-a}{2-1} = b} & \color{MediumVioletRed}{f[x_0,x_1,x_2] = \cfrac{28-b}{4-1} = c} \\
+                    \hline
+                    1 & 2 & f[x_1] = 8 & f[x_1,x_2] = \cfrac{64-8}{4-2} = 28 & \\
+                    \hline
+                    2 & 4 & f[x_2] = 64 & & \\
+                    \end{array}$$
+                    위 분할 차분표에서 \(a, \, b, \, c\)를 구하시오<br />
+                    \(a\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(a = y_0\)"><span class="span_quiz"></span><br />
+                    \(b\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="7" hint="\(b = (8-a)/(2-1)=8-a\)"><span class="span_quiz"></span><br />
+                    \(c\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="7" hint="\(c = (28-b)/3\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="divided_differences"></a>분할 차분을 이용한 보간(divided differences for interpolation)</h3>
+            <ul hidden>
+                <li>
+                    이상의 내용을 일반화하여 정리하면 다음과 같다.
+                </li>
+                <li>
+                    \(n+1\)개 점의 좌표 \((x_0, \, y_0), \, (x_1, \, y_1), \, \cdots, \, (x_n, \, y_n)\)이 주어진 경우, 분할 차분을 이용한 보간식은 \(n\)차가 되며 다음과 같다.
+                    $$\begin{align}
+                    p_n(x) &= \sum_{i=0}^n f[x_0,\cdots,x_i]N_i(x) \\
+                    &=f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) + \, \cdots \\
+                    &\quad\; \cdots \,  + f[x_0,x_1,\cdots,x_{n-1}]N_{n-1}(x) + f[x_0,x_1,\cdots,x_n]N_n(x)
+                    \end{align}$$
+                </li>
+                <li>
+                    여기에서 <em>\(N_i(x)\)는 뉴턴 기본 다항식(Newton basis polynimials)</em>이라고 하며 다음과 같다.
+                    <em>$$ N_i(x) = \prod_{j=0}^{i-1} (x-x_j) = (x-x_0)(x-x_1)\cdots(x-x_{i-2})(x-x_{i-1}) \quad N_0(x) = 1$$</em>
+                </li>
+                <li>
+                    따라서 <em>\(n+1\)개 점의 좌표 \((x_0, \, y_0), \, (x_1, \, y_1), \, \cdots, \, (x_n, \, y_n)\)</em>이 주어진 경우, <em>분할 차분을 이용한 \(n\)차 보간식</em>은 다음과 같다.
+                    <em>
+                        $$\begin{align}
+                        p_n(x) &=f[x_0] + f[x_0,x_1](x-x_0) + f[x_0,x_1,x_2](x-x_0)(x-x_1) + \, \cdots \\
+                        &\quad\; \cdots \,  + f[x_0,x_1,\cdots,x_n](x-x_0)(x-x)\cdots(x-x_n) \\
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    여기에서 <em>\(f[x_0,x_1,\cdots,x_n]\)은 분할 차분(divided differences)</em>이며 다음과 같다.
+                    <em>
+                        $$ f[x_0,x_1,\cdots,x_n] = \cfrac{f[x_1,\cdots,x_n]-f[x_0,\cdots,x_{n-1}]}{x_n-x_0} $$
+                    </em>
+                </li>
+                <li>
+                    만약 5개 점의 좌표가 주어진 경우에 분할 차분을 이용한 보간식의 차수를 구하시오.<br />
+                    <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;"> 차
+                    <input type="submit" class="submit_quiz" value="확인" answer="4" hint="\(n+1\)개 점의 좌표가 주어지면 분할 차분을 이용한 보간식은 \(n\)차"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="example_1"></a>예제 1</h3>
+            <ul hidden>
+                <li>
+                    <em>\(2+1\)개 점의 좌표 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (4, \, 64)\)</em>가 주어진 경우, <em>분할 차분을 이용한 보간식은 \(2\)차</em>가 되며 다음과 같다.
+                    <em>$$ p_2(x) = \sum_{i=0}^2 f[x_0,\cdots,x_i]N_i(x) = f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) $$</em>
+                </li>
+                <li>
+                    여기에서 \(N_i(x)\)는 다음과 같다.
+                    <em>$$ N_0(x) = 1 \quad N_1(x) = (x-x_0) = (x-1) \quad N_2(x) = (x-x_0)(x-x_1) = (x-1)(x-2) $$</em>
+                </li>
+                <li>
+                    점 세개의 좌표가 \((1, \, 1), \, (2, \, 8), \, (4, \, 64)\)이므로 분할 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & f[x_0] & f[x_0,x_1] & f[x_0,f_1,f_2] \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{f[x_0] = 1} & \color{MediumVioletRed}{f[x_0,x_1] = \cfrac{8-1}{2-1} = 7} & \color{MediumVioletRed}{f[x_0,x_1,x_2] = \cfrac{28-7}{4-1} = 7} \\
+                    \hline
+                    1 & 2 & f[x_1] = 8 & f[x_1,x_2] = \cfrac{64-8}{4-2} = 28 & \\
+                    \hline
+                    2 & 4 & f[x_2] = 64 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    따라서 분할 차분을 이용한 보간식은 다음과 같다.
+                    <em>
+                        $$ \begin{align}
+                        p_2(x) &= f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) \\
+                        &= 1\times1 + 7(x-1) + 7(x-1)(x-2) = 1 + 7(x-1) + 7(x-1)(x-2)
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    위의 보간식을 이용하여 \(x=1, \, 2, \, 4, \, 3\)인 경우의 보간값을 구하시오.<br />
+                    \(x = 1\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(p_2(1) = 1 + 7(1-1) + 7(1-1)(1-2) \\ = 1 + 7\times0 + 7\times0\)"><span class="span_quiz"></span><br />
+                    \(x = 2\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="8" hint="\(p_2(2) = 1 + 7(2-1) + 7(2-1)(2-2) \\ = 1 + 7\times1 + 7\times0\)"><span class="span_quiz"></span><br />
+                    \(x = 4\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="64" hint="\(p_2(4) = 1 + 7(4-1) + 7(4-1)(4-2) \\ = 1 + 7\times3 + 7\times6\)"><span class="span_quiz"></span><br />
+                    \(x = 3\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="29" hint="\(p_2(3) = 1 + 7(3-1) + 7(3-1)(3-2) \\ = 1 + 7\times2 + 7\times2\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="example_2"></a>예제 2</h3>
+            <ul hidden>
+                <li>
+                    <em>\(3\)개 점의 좌표 \((1, \, 1), \, (2, \, 8), \, (3, \, 27)\)</em>이 주어진 경우, <em>분할 차분을 이용한 보간식은 \(2\)차</em>가 되며 다음과 같다.
+                    <em>$$ p_2(x) = f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) $$</em>
+                </li>
+                <li>
+                    여기에서 \(N_i(x)\)는 다음과 같다.
+                    <em>$$ N_0(x) = 1 \quad N_1(x) = (x-x_0) = (x-1) \quad N_2(x) = (x-x_0)(x-x_1) = (x-1)(x-2) $$</em>
+                </li>
+                <li>
+                    점 세개의 좌표가 \((1, \, 1), \, (2, \, 8), \, (3, \, 27)\)이므로 분할 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & f[x_0] & f[x_0,x_1] & f[x_0,f_1,f_2] \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{f[x_0] = 1} & \color{MediumVioletRed}{f[x_0,x_1] = \cfrac{8-1}{2-1} = 7} & \color{MediumVioletRed}{f[x_0,x_1,x_2] = \cfrac{19-7}{3-1} = 6} \\
+                    \hline
+                    1 & 2 & f[x_1] = 8 & f[x_1,x_2] = \cfrac{27-8}{3-2} = 19 & \\
+                    \hline
+                    2 & 3 & f[x_2] = 27 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    따라서 분할 차분을 이용한 보간식은 다음과 같다.
+                    <em>
+                        $$ \begin{align}
+                        p_2(x) &= f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) \\
+                        &= 1\times1 + 7(x-1) + 6(x-1)(x-2) = 1 + 7(x-1) + 6(x-1)(x-2)
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    위의 보간식을 이용하여 \(x=1, \, 2, \, 3, \, 1.5\)인 경우의 보간값을 구하시오.<br />
+                    \(x = 1\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(p_2(1) = 1 + 7(1-1) + 6(1-1)(1-2) \\ = 1 + 7\times0 + 6\times0\)"><span class="span_quiz"></span><br />
+                    \(x = 2\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="8" hint="\(p_2(2) = 1 + 7(2-1) + 6(2-1)(2-2) \\ = 1 + 7\times1 + 6\times0\)"><span class="span_quiz"></span><br />
+                    \(x = 3\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="27" hint="\(p_2(3) = 1 + 7(3-1) + 6(3-1)(3-2) \\ = 1 + 7\times2 + 6\times2\)"><span class="span_quiz"></span><br />
+                    \(x = 1.5\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="3" hint="\(p_2(1.5) = \\ 1 + 7(1.5-1) + 6(1.5-1)(1.5-2) \\ = 1 + 7\times0.5 + 6\times-0.25\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="example_3"></a>예제 3</h3>
+            <ul hidden>
+                <li>
+                    <em>\(3\)개 점의 좌표 \((2, \, 0.30103), \, (3, \, 0.47712), \, (4, \, 0.60206)\)</em>이 주어진 경우, <em>분할 차분을 이용한 보간식은 \(2\)차</em>가 되며 다음과 같다.
+                    <em>$$ p_2(x) = f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) $$</em>
+                </li>
+                <li>
+                    여기에서 \(N_i(x)\)는 다음과 같다.
+                    <em>$$ N_0(x) = 1 \quad N_1(x) = (x-x_0) = (x-2) \quad N_2(x) = (x-x_0)(x-x_1) = (x-2)(x-3) $$</em>
+                </li>
+                <li>
+                    점 세개의 좌표가 \((2, \, 0.30103), \, (3, \, 0.47712), \, (4, \, 0.60206)\)이므로 분할 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & f[x_0] & f[x_0,x_1] & f[x_0,f_1,f_2] \\
+                    \hline
+                    0 & 2 & \color{MediumVioletRed}{f[x_0] = 0.30103} & \color{MediumVioletRed}{f[x_0,x_1] = \cfrac{0.47712-0.30103}{3-2} = 0.17609} & \color{MediumVioletRed}{f[x_0,x_1,x_2] = \cfrac{0.12494-0.17609}{4-2} = -0.025575} \\
+                    \hline
+                    1 & 3 & f[x_1] = 0.47712 & f[x_1,x_2] = \cfrac{0.60206-0.47712}{4-3} = 0.12494 & \\
+                    \hline
+                    2 & 4 & f[x_2] = 0.60206 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    따라서 분할 차분을 이용한 보간식은 다음과 같다.
+                    <em>
+                        $$ \begin{align}
+                        p_2(x) &= f[x_0]N_0(x) + f[x_0,x_1]N_1(x) + f[x_0,x_1,x_2]N_2(x) \\
+                        &= 0.30103\times1 + 0.17609(x-2) − 0.025575(x-2)(x-3) \\
+                        &= 0.30103 + 0.17609(x-2) − 0.025575(x-2)(x-3)
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    위의 보간식을 이용하여 \(x=2.5\)인 경우의 보간값을 구하시오.<br />
+                    \(x = 2.5\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="0.39547" hint="\(p_2(2.5) = 0.30103 + 0.17609(2.5-2) \\ − 0.025575(2.5-2)(2.5-3)\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+        </div>
+        <div class="separator"></div>
+
+        <!--########## RE VIEW ##########-->
+        <div id="re_view_quiz" hidden>
+            <br /><input type="submit" class="submit_eval" value="다음 단계로" hidden/>
+            <br /><span class="span_eval"></span>
+        </div>
+
+    </div>
+
+</body>
+</html>

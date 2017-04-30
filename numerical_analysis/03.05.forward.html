@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript" src="../javascripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="../javascripts/login.js"></script>
+    <script type="text/javascript" src="../javascripts/quiz.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="../stylesheets/stylesheet.css">
+    <title>Newton's forward differences for interpolation</title>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header_wrapper">
+        <a class="header_octocat" href="https://pages.github.com" target="_blank"></a>
+        <h1 class="header_title">뉴턴의 전방 차분을 이용한 보간(Newton's forward differences for interpolation)</h1>
+        <span class="header_span_login"></span>
+        <a class="header_login"></a>
+        <a class="header_email" href="mailto:ironbell@kyungnam.ac.kr"></a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content_wrapper">
+
+        <!--########## PRE VIEW ##########-->
+        <div id="pre_view" hidden>
+            <h3><a name="pre_veiw"></a>학습자</h3>
+            이름 입력<br />
+            <input type="text" class="input_name" placeholder="이름을 입력하세요" ondrop="return false;" onpaste="return false;">
+            <input type="submit" class="submit_name" value="이름 입력" /><span class="span_name"></span><br />
+        </div>
+        <div class="separator"></div>
+
+        <!--########## MAIN VIEW ##########-->
+        <div id="main_view" hidden>
+            <!--inline script for left-align of MathJax equation-->
+            <script>
+                if (MathJax) {
+                    MathJax.Hub.Config({ displayAlign: "left" });
+                    MathJax.Hub.Rerender();
+                }
+            </script>
+            <!--script for left-align of MathJax equation-->
+            <h3 hidden><a name="introduction"></a>개요</h3>
+            <ul hidden>
+                <li>
+                    분할 차분을 이용한 보간은 주어진 점들의 \(x\)좌표 간격이 동일하거나 동일하지 않은 모든 경우에 적용할 수 있다.
+                </li>
+                <li>
+                    하지만 주어진 점들의 \(x\)좌표 간격이 동일하면 분할 차분을 더 편리하게 계산할 수 있다. 전방 차분을 이용한 보간에서는 이러한 점을 활용한다.
+                </li>
+                <li>
+                    따라서 전방 차분을 이용한 보간은 주어진 점들의 \(x\)좌표 간격이 동일한 경우에만 적용할 수 있다.
+                </li>
+                <li>
+                    점 세개의 좌표가 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (4, \, 64)\)로 주어진 경우, 분할 차분을 이용한 보간을 적용할 수 있는지 예/아니오로 답하시오.<br />
+                    <input type="text" class="input_quiz" placeholder="답을 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="예" hint="분할 차분을 이용한 보간은 주어진 점의 \(x\)좌표 간격이 동일하거나 동일하지 않은 모든 경우에 적용 가능"><span class="span_quiz"></span><br />
+                </li>
+                <li>
+                    점 세개의 좌표가 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (3, \, 27)\)로 주어진 경우, 전방 차분을 이용한 보간을 적용할 수 있는지 예/아니오로 답하시오.<br />
+                    <input type="text" class="input_quiz" placeholder="답을 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="예" hint="전방 차분을 이용한 보간은 주어진 점들의 \(x\)좌표 간격이 동일한 경우에만 적용 가능"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="forward_differences_interpolation"></a>전방 차분을 이용한 보간(forward differences for interpolation)</h3>
+            <ul hidden>
+                <li>
+                    전방 차분을 이용한 보간은 기본적으로 분할 차분을 이용한 보간과 동일하다. 다만, 주어진 모든 점의 \(x\)좌표의 값이 동일하다는 것을 이용한다.
+                </li>
+                <li>
+                    <em>\(n+1\)개 점의 좌표 \((x_0, \, y_0), \, (x_1, \, y_1), \, \cdots, \, (x_n, \, y_n)\)이 주어진 경우, 모든 점의 \(x\)좌표 간격을 \(h\)라고 하면 \(x_1 - x_0 = x_2 - x_1 = x_3 - x_2 = \cdots = x_n - x_{n-1} = h\)</em>이다.
+                    이때 <em>전방 차분을 이용한 보간식은 \(n\)차</em>가 되며 다음과 같다.
+                    $$\begin{align}
+                    p_n(x) &= \sum_{i=0}^n \frac{\Delta^{(i)}y_0}{i!h^i} N_i(x) \\
+                    & = \frac{\Delta^{(0)}y_0}{0!h^0} N_0(x) + \frac{\Delta^{(1)}y_0}{1!h^1} N_1(x) + \frac{\Delta^{(2)}y_0}{2!h^2} N_2(x) + \, \cdots \\
+                    &\quad\; \cdots \,  + \frac{\Delta^{(n-1)}y_0}{(n-1)!h^{n-1}} N_{n-1}(x) + \frac{\Delta^{(n)}y_0}{n!h^n} N_n(x) \\
+                    \end{align}$$
+                </li>
+                <li>
+                    위 식에 뉴턴 기본 다항식을 대입하고 최대한 간단하게 정리하면 다음과 같다.
+                    <em>
+                        $$\begin{align}
+                        p_n(x) &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{h} (x-x_0) + \frac{\Delta^{(2)}y_0}{2!h^2} (x-x_0)(x-x_1) + \, \cdots \\
+                        &\quad\; \cdots \,  + \frac{\Delta^{(n)}y_0}{n!h^n} (x-x_0)(x-x_1)\cdots(x-x_{n-1})(x-x_n) \\
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    여기에서 <em>\(\Delta^{(0)}y_0, \, \Delta^{(1)}y_0, \, \Delta^{(2)}y_0, \, \cdots, \, \Delta^{(n)}y_0\)는 전방 차분(forward differences)</em>이며 다음과 같다.
+                    <em>
+                        $$ \Delta^{(0)}y_k = y_k, \quad \Delta^{(i)}y_k = \Delta^{(i-1)}y_{k+1} - \Delta^{(i-1)}y_k $$
+                    </em>
+                </li>
+                <li>
+                    3개 점의 좌표가 주어진 경우에 분할 차분을 이용한 보간식의 차수를 구하시오.<br />
+                    <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;"> 차
+                    <input type="submit" class="submit_quiz" value="확인" answer="2" hint="\(n+1\)개 점의 좌표가 주어지면 분할 차분을 이용한 보간식은 \(n\)차"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="forward_differences"></a>전방 차분(forward differences)</h3>
+            <ul hidden>
+                <li>
+                    점 세개의 좌표가 \((x_0, \, y_0), \, (x_1, \, y_1), \, (x_2, \, y_2)\)로 주어진 경우, 전방 차분을 계산하는 전방 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{\Delta^{(0)}y_0 = y_0} & \color{MediumVioletRed}{\Delta^{(1)}y_0 = \Delta^{(0)}y_1 - \Delta^{(0)}y_0} & \color{MediumVioletRed}{\Delta^{(2)}y_0 = \Delta^{(1)}y_1 - \Delta^{(1)}y_0} \\
+                    \hline
+                    1 & 2 & \Delta^{(0)}y_1 = y_1 & \Delta^{(1)}y_1 = \Delta^{(0)}y_2 - \Delta^{(0)}y_1 & \\
+                    \hline
+                    2 & 3 & \Delta^{(0)}y_2 = y_2 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    점 세개의 좌표가 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (3, \, 27)\)로 주어진 경우, 전방 차분을 계산하는 전방 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{\Delta^{(0)}y_0 = a} & \color{MediumVioletRed}{\Delta^{(1)}y_0 = 8 - a = b} & \color{MediumVioletRed}{\Delta^{(2)}y_0 = 19 - b = c} \\
+                    \hline
+                    1 & 2 & \Delta^{(0)}y_1 = 8 & \Delta^{(1)}y_1 = 27 - 8 = 19 & \\
+                    \hline
+                    2 & 3 & \Delta^{(0)}y_2 = 27 & & \\
+                    \end{array}$$
+                    위 전방 차분표에서 \(a, \, b, \, c\)를 구하시오<br />
+                    \(a\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(a = y_0\)"><span class="span_quiz"></span><br />
+                    \(b\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="7" hint="\(b = 8-a\)"><span class="span_quiz"></span><br />
+                    \(c\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="12" hint="\(c = 19 - b\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="example_1"></a>예제 1</h3>
+            <ul hidden>
+                <li>
+                    <em>\(2+1\)개 점의 좌표 \((x_0, \, y_0) = (1, \, 1), \, (x_1, \, y_1) = (2, \, 8), \, (x_2, \, y_2) = (3, \, 27)\)</em>이 주어진 경우, <em>\(h=2-1=3-2=1\), 전방 차분을 이용한 보간식은 \(2\)차</em>이며 다음과 같다.
+                    $$\begin{align}
+                    p_2(x) &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{h} (x-x_0) + \frac{\Delta^{(2)}y_0}{2!h^2} (x-x_0)(x-x_1) \\
+                    &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{1} (x-1) + \frac{\Delta^{(2)}y_0}{2!\times1^2} (x-1)(x-2) \\
+                    &= \Delta^{(0)}y_0 + \Delta^{(1)}y_0(x-1) + \frac{\Delta^{(2)}y_0}{2} (x-1)(x-2) \\
+                    \end{align}$$
+                </li>
+                <li>
+                    점 세개의 좌표가 \((1, \, 1), \, (2, \, 8), \, (3, \, 27)\)이므로 전방 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{\Delta^{(0)}y_0 = 1} & \color{MediumVioletRed}{\Delta^{(1)}y_0 = 8 - 1 = 7} & \color{MediumVioletRed}{\Delta^{(2)}y_0 = 19 - 7 = 12} \\
+                    \hline
+                    1 & 2 & \Delta^{(0)}y_1 = 8 & \Delta^{(1)}y_1 = 27 - 8 = 19 & \\
+                    \hline
+                    2 & 3 & \Delta^{(0)}y_2 = 27 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    따라서 전방 차분을 이용한 보간식은 다음과 같다.
+                    <em>
+                        $$ \begin{align}
+                        p_2(x) &= \Delta^{(0)}y_0 + \Delta^{(1)}y_0(x-1) + \frac{\Delta^{(2)}y_0}{2} (x-1)(x-2) \\
+                        &= 1 + 7(x-1) + \frac{12}{2} (x-1)(x-2) = 1 + 7(x-1) + 6(x-1)(x-2)
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    위의 보간식을 이용하여 \(x=1, \, 2, \, 3, \, 1.5\)인 경우의 보간값을 구하시오.<br />
+                    \(x = 1\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="1" hint="\(p_2(1) = 1 + 7(1-1) + 6(1-1)(1-2) \\ = 1 + 7\times0 + 6\times0\)"><span class="span_quiz"></span><br />
+                    \(x = 2\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="8" hint="\(p_2(2) = 1 + 7(2-1) + 6(2-1)(2-2) \\ = 1 + 7\times1 + 6\times0\)"><span class="span_quiz"></span><br />
+                    \(x = 3\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="27" hint="\(p_2(3) = 1 + 7(3-1) + 6(3-1)(3-2) \\ = 1 + 7\times2 + 6\times2\)"><span class="span_quiz"></span><br />
+                    \(x = 1.5\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="3" hint="\(p_2(1.5) = \\ 1 + 7(1.5-1) + 6(1.5-1)(1.5-2) \\ = 1 + 7\times0.5 + 6\times-0.25\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="example_2"></a>예제 2</h3>
+            <ul hidden>
+                <li>
+                    <em>\(3\)개 점의 좌표 \((2, \, 0.30103), \, (3, \, 0.47712), \, (4, \, 0.60206)\)</em>이 주어진 경우, <em>\(h=3-2=4-3=1\), 전방 차분을 이용한 보간식은 \(2\)차</em>가 되며 다음과 같다.
+                    $$\begin{align}
+                    p_2(x) &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{h} (x-x_0) + \frac{\Delta^{(2)}y_0}{2!h^2} (x-x_0)(x-x_1) \\
+                    &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{1} (x-2) + \frac{\Delta^{(2)}y_0}{2!\times1^2} (x-2)(x-3) \\
+                    &= \Delta^{(0)}y_0 + \Delta^{(1)}y_0(x-2) + \frac{\Delta^{(2)}y_0}{2} (x-2)(x-3) \\
+                    \end{align}$$
+                </li>
+                <li>
+                    점 세개의 좌표가 \((2, \, 0.30103), \, (3, \, 0.47712), \, (4, \, 0.60206)\)이므로 전방 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} \\
+                    \hline
+                    0 & 1 & \color{MediumVioletRed}{\Delta^{(0)}y_0 = 0.30103} & \color{MediumVioletRed}{\Delta^{(1)}y_0 = 0.47712 - 0.30103 = 0.17609} & \color{MediumVioletRed}{\Delta^{(2)}y_0 = 0.12494 - 0.17609 = -0.05115} \\
+                    \hline
+                    1 & 2 & \Delta^{(0)}y_1 = 0.47712 & \Delta^{(1)}y_1 = 0.60206 - 0.47712 = 0.12494 & \\
+                    \hline
+                    2 & 3 & \Delta^{(0)}y_2 = 0.60206 & & \\
+                    \end{array}$$
+                </li>
+                <li>
+                    따라서 전방 차분을 이용한 보간식은 다음과 같다.
+                    <em>
+                        $$ \begin{align}
+                        p_2(x) &= \Delta^{(0)}y_0 + \Delta^{(1)}y_0(x-2) + \frac{\Delta^{(2)}y_0}{2} (x-2)(x-3) \\
+                        &= 0.30103 + 0.17609(x-2) + \frac{−0.025575}{2} (x-2)(x-3) \\
+                        &= 0.30103 + 0.17609(x-2) − 0.025575(x-2)(x-3)
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    위의 보간식을 이용하여 \(x=2.5\)인 경우의 보간값을 구하시오.<br />
+                    \(x = 2.5\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="0.39547" hint="\(p_2(2.5) = 0.30103 + 0.17609(2.5-2) \\ − 0.025575(2.5-2)(2.5-3)\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+            <h3 hidden><a name="example_3"></a>예제 3</h3>
+            <ul hidden>
+                <li>
+                    <em>점의 좌표 \((10, \, 3.162278), \, (11, \, 3.316625), \, (12,3.464102), \, (13, \, 3.605551), \, (14, \, 3.741657)\)</em>이 주어진 경우, <em>\(h=11-10=12-11=13-12=14-13=1\), 전방 차분을 이용한 보간식은 \(5-1=4\)차</em>가 되며 다음과 같다.
+                    $$\begin{align}
+                    p_4(x) &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{h} (x-x_0) + \frac{\Delta^{(2)}y_0}{2!h^2} (x-x_0)(x-x_1) \\
+                    &+ \frac{\Delta^{(3)}y_0}{3!h^3} (x-x_0)(x-x_1)(x-x_2) + \frac{\Delta^{(4)}y_0}{4!h^4} (x-x_0)(x-x_1)(x-x_2)(x-x_3) \\
+                    &= \Delta^{(0)}y_0 + \frac{\Delta^{(1)}y_0}{1}(x-10) + \frac{\Delta^{(2)}y_0}{2!\times1^2} (x-10)(x-11) \\
+                    &+\frac{\Delta^{(3)}y_0}{3!1^3} (x-10)(x-11)(x-12) + \frac{\Delta^{(4)}y_0}{4!1^4} (x-10)(x-11)(x-12)(x-13) \\
+                    &= \Delta^{(0)}y_0 + \Delta^{(1)}y_0(x-10) + \frac{\Delta^{(2)}y_0}{2} (x-10)(x-11) \\
+                    &+\frac{\Delta^{(3)}y_0}{6} (x-10)(x-11)(x-12) + \frac{\Delta^{(4)}y_0}{24} (x-10)(x-11)(x-12)(x-13) \\
+                    \end{align}$$
+                </li>
+                <li>
+                    점의 좌표가 \((10, \, 3.162278), \, (11, \, 3.316625), \, (12,3.464102), \, (13, \, 3.605551), \, (14, \, 3.741657)\)이므로 전방 차분표는 다음과 같다.
+                    $$\begin{array}{c|c|c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} & \Delta^{(3)} & \Delta^{(4)} \\
+                    \hline
+                    0 & 10 & \color{MediumVioletRed}{\Delta^{(0)}y_0} & \color{MediumVioletRed}{\Delta^{(1)}y_0 = \Delta^{(0)}y_1 - \Delta^{(0)}y_0} & \color{MediumVioletRed}{\Delta^{(2)}y_0 = \Delta^{(1)}y_1 - \Delta^{(1)}y_0} & \color{MediumVioletRed}{\Delta^{(3)}y_0 = \Delta^{(2)}y_1 - \Delta^{(2)}y_0} & \color{MediumVioletRed}{\Delta^{(4)}y_0 = \Delta^{(3)}y_1 - \Delta^{(3)}y_0}\\
+                    \hline
+                    1 & 11 & \Delta^{(0)}y_1 & \Delta^{(1)}y_1 = \Delta^{(0)}y_2 = \Delta^{(0)}y_1 & \Delta^{(2)}y_1 = \Delta^{(1)}y_2 - \Delta^{(1)}y_1 & \Delta^{(3)}y_1 = \Delta^{(2)}y_2 - \Delta^{(2)}y_1 & \\
+                    \hline
+                    2 & 12 & \Delta^{(0)}y_2 & \Delta^{(1)}y_2 = \Delta^{(0)}y_3 - \Delta^{(0)}y_2 & \Delta^{(2)}y_2 = \Delta^{(1)}y_3 - \Delta^{(1)}y_2 & & \\
+                    \hline
+                    3 & 13 & \Delta^{(0)}y_3 & \Delta^{(1)}y_3 = \Delta^{(0)}y_4 - \Delta^{(0)}y_3 & & & \\
+                    \hline
+                    4 & 14 & \Delta^{(0)}y_4 & & & \\
+                    \end{array}$$
+                    $$\begin{array}{c|c|c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} & \Delta^{(3)} & \Delta^{(4)} \\
+                    \hline
+                    0 & 10 & \color{MediumVioletRed}{3.162278} & \color{MediumVioletRed}{3.316625 - 3.162278 = 0.154347} & \color{MediumVioletRed}{0.147477 - 0.154347 = -0.006870} & \color{MediumVioletRed}{-0.006028 + 0.006870 = 0.000842} & \color{MediumVioletRed}{0.000685 - 0.000842 = -0.000157}\\
+                    \hline
+                    1 & 11 & 3.316625 & 3.464102 - 3.316625 = 0.147477 & 0.141449 - 0.147477 = -0.006028 & -0.005343 + 0.006028 = 0.000685 & \\
+                    \hline
+                    2 & 12 & 3.464102 & 3.605551 - 3.464102 = 0.141449 & 0.136106 - 0.141449 = -0.005343 & & \\
+                    \hline
+                    3 & 13 & 3.605551 & 3.741657 - 3.605551 = 0.136106 & & & \\
+                    \hline
+                    4 & 14 & 3.741657 & & & & \\
+                    \end{array}$$
+                    <!--$$\begin{array}{c|c|c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} & \Delta^{(3)} & \Delta^{(4)} \\
+                    \hline
+                    0 & 10 & \color{MediumVioletRed}{3.162278} & \color{MediumVioletRed}{3.316625 - 3.162278} & \color{MediumVioletRed}{0.147477 - 0.154347} & \color{MediumVioletRed}{−0.006028 + 0.006870} & \color{MediumVioletRed}{0.000685 - 0.000842}\\
+                    \hline
+                    1 & 11 & 3.316625 & 3.464102 - 3.316625 & 0.141449 - 0.147477 & −0.005343 + 0.006028 & \\
+                    \hline
+                    2 & 12 & 3.464102 & 3.605551 - 3.464102 & 0.136106 - 0.141449 & & \\
+                    \hline
+                    3 & 13 & 3.605551 & 3.741657 - 3.605551 & & & \\
+                    \hline
+                    4 & 14 & 3.741657 & & & & \\
+                    \end{array}$$
+                    $$\begin{array}{c|c|c|c|c|c}
+                    i & x_i & \Delta^{(0)} & \Delta^{(1)} & \Delta^{(2)} & \Delta^{(3)} & \Delta^{(4)} \\
+                    \hline
+                    0 & 10 & \color{MediumVioletRed}{3.162278} & \color{MediumVioletRed}{0.154347} & \color{MediumVioletRed}{-0.006870} & \color{MediumVioletRed}{0.000842} & \color{MediumVioletRed}{-0.000157}\\
+                    \hline
+                    1 & 11 & 3.316625 & 0.147477 & -0.006028 & 0.000685 & \\
+                    \hline
+                    2 & 12 & 3.464102 & 0.141449 & -0.005343 & & \\
+                    \hline
+                    3 & 13 & 3.605551 & 0.136106 & & & \\
+                    \hline
+                    4 & 14 & 3.741657 & & & & \\
+                    \end{array}$$-->
+                </li>
+                <li>
+                    따라서 전방 차분을 이용한 보간식은 다음과 같다.
+                    <em>
+                        $$ \begin{align}
+                        p_2(x) &= \Delta^{(0)}y_0 + \Delta^{(1)}y_0(x-10) + \frac{\Delta^{(2)}y_0}{2} (x-10)(x-11) \\
+                        &+\frac{\Delta^{(3)}y_0}{6} (x-10)(x-11)(x-12) + \frac{\Delta^{(4)}y_0}{24} (x-10)(x-11)(x-12)(x-13) \\
+                        &= 3.162278 + 0.154347(x-10) + \frac{−0.006870}{2} (x-10)(x-11) \\
+                        &+\frac{0.000842}{6} (x-10)(x-11)(x-12) + \frac{−0.000157}{24} (x-10)(x-11)(x-12)(x-13) \\
+                        \end{align}$$
+                    </em>
+                </li>
+                <li>
+                    위의 보간식을 이용하여 \(x=10.4\)인 경우의 보간값을 구하시오. (매우 어려움)<br />
+                    \(x = 10.4\) <input type="number" class="input_quiz" placeholder="답을 숫자로 입력하세요" ondrop="return false;" onpaste="return false;">
+                    <input type="submit" class="submit_quiz" value="확인" answer="3.224901" hint="\(p_4(10.4) = 3.162278 + 0.154347(10.4-10) + \\
+                           \cfrac{−0.006870}{2} (10.4-10)(10.4-11) + \\
+                           \cfrac{0.000842}{6} (10.4-10)(10.4-11)(10.4-12) + \\
+                           \cfrac{−0.000157}{24} (10.4-10)(10.4-11)(10.4-12)\\(10.4-13)\)"><span class="span_quiz"></span><br />
+                </li>
+            </ul>
+        </div>
+        <div class="separator"></div>
+
+        <!--########## RE VIEW ##########-->
+        <div id="re_view_quiz" hidden>
+            <br /><input type="submit" class="submit_eval" value="다음 단계로" hidden/>
+            <br /><span class="span_eval"></span>
+        </div>
+
+    </div>
+
+</body>
+</html>
