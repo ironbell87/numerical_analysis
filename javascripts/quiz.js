@@ -151,12 +151,17 @@ $(document).ready(function () {
             }
         }
         else {
-            var title = 'numerical analysis - ' + $(document).find("title").text();
-            var body_str = $('.input_name').val() + ";"; // name
+            var m_title = 'numerical analysis - ' + $(document).find("title").text();
+            var m_body = $('.input_name').val() + ";"; // name
             for (i = 0; i < g_time_stamps.length; i++) { // time stamps
-                body_str += g_time_stamps[i] + ";";
+                m_body += g_time_stamps[i] + ";";
             }
-            window.location.href = 'mailto:ironbell@kyungnam.ac.kr?subject=' + title + '&body=' + body_str;
+
+            //window.location.href = 'mailto:ironbell@kyungnam.ac.kr?subject=' + m_title + '&body=' + m_body;
+            var m_title = 'numerical analysis - ' + $(document).find("title").text();
+            m_popup = window.open('', 'Popup Name', 'fullscreen=no, width=500, height=400, left=100, top=100');
+            m_popup.document.write('<span>받는사람 : ironbell@kyungnam.ac.kr</span><br /><br /><span>제목 : ' + m_title + '</span><br /><br /><span>본문 : ' + m_body + '</span>');
+
             window.history.back(); // same to window.history.history.go(-1)
         }
     });
